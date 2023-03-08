@@ -9,9 +9,7 @@ for i = 1:m
     filename = [str1{i} 'Train']
     load (filename);
     [X,Y,Z]=create_SubTable2(data_array, tree);
-    tic;
     [feature{i},W{i},YD{i}] = HFSLE(X, Y, Z, tree, 10, alpha(i), theta(i), beta(i), 0);
-    TrainTime{i} =toc;
     %Test feature batch
     testFile = [str1{i}, 'Test.mat']
     load (testFile);
