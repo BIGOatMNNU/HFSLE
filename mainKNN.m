@@ -1,8 +1,8 @@
 clc; clear;
 str1={'DD';'F194'};
-alpha=[10 10];%α
-theta=[100 10];%θ
-beta=[10 0.01];%β
+alpha=[10 10];
+theta=[100 10];
+beta=[10 0.01];
 m = length(str1);
 rng('default');
 for i = 1:m
