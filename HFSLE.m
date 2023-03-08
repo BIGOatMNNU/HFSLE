@@ -1,4 +1,4 @@
-function [feature_slct,W,YD] = HFSLE(X, Y, Z ,tree, lambda, alpha, beta, zeta, flag)
+function [feature_slct,W,YD] = HFSLE(X, Y, Z ,tree, lambda, alpha, theta, beta, flag)
 % rand('seed',1);
 % internalNodes(find(internalNodes==-1))=[];
 indexRoot = tree_Root(tree);% The root of the tree
@@ -63,7 +63,7 @@ for i = 1:10
     YD_old=YD;
     %% Update the root node
     
-    W{indexRoot} = inv(XX{indexRoot} + lambda * D{indexRoot}+beta*gTg{indexRoot}) * (X{indexRoot}'*YD{indexRoot});
+    W{indexRoot} = inv(XX{indexRoot} + lambda * D{indexRoot}+theta*gTg{indexRoot}) * (X{indexRoot}'*YD{indexRoot});
     YD{indexRoot}=inv((1+alpha)*I{indexRoot})*(X{indexRoot}*W{indexRoot}+alpha*Y{indexRoot});
     
     %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -71,7 +71,7 @@ for i = 1:10
     
     for j = 1:length(internalNodes)
         if ~isempty(W{internalNodes(j)})
-            W{internalNodes(j)} = inv(XX{internalNodes(j)} + lambda * D{internalNodes(j)}+beta*gTg{internalNodes(j)}) * (X{internalNodes(j)}'*YD{internalNodes(j)});
+            W{internalNodes(j)} = inv(XX{internalNodes(j)} + lambda * D{internalNodes(j)}+theta*gTg{internalNodes(j)}) * (X{internalNodes(j)}'*YD{internalNodes(j)});
             Lsum=0;
             PYD=tree(internalNodes(j),1);
             indx=Z{PYD}(ismember(Z{PYD},Z{internalNodes(j)}));
@@ -95,15 +95,15 @@ for i = 1:10
             D1 = diag(sum(C,2));
             L=D1-C;
             Lsum=Lsum+L;
-            YD{internalNodes(j)}=inv((1+alpha)*I{internalNodes(j)}+zeta*Lsum)*(X{internalNodes(j)}*W{internalNodes(j)}+alpha*Y{internalNodes(j)});
+            YD{internalNodes(j)}=inv((1+alpha)*I{internalNodes(j)}+beta*Lsum)*(X{internalNodes(j)}*W{internalNodes(j)}+alpha*Y{internalNodes(j)});
             cur_L{internalNodes(j)}=Lsum;
         end
     end
     %% Print the value of object function if flag is 1.
     if (flag ==1)
-        obj(i)=norm(X{indexRoot}*W{indexRoot}-YD{indexRoot},'fro')^2+lambda*L21(W{indexRoot})+alpha*norm(YD{indexRoot}-Y{indexRoot},'fro')^2+ beta*norm(gap{indexRoot}*W{indexRoot})^2;
+        obj(i)=norm(X{indexRoot}*W{indexRoot}-YD{indexRoot},'fro')^2+lambda*L21(W{indexRoot})+alpha*norm(YD{indexRoot}-Y{indexRoot},'fro')^2+ theta*norm(gap{indexRoot}*W{indexRoot})^2;
         for j = 1:length(internalNodes)
-            obj(i)=obj(i)+norm(X{internalNodes(j)}*W{internalNodes(j)}-YD{internalNodes(j)},'fro')^2+lambda*L21(W{internalNodes(j)})+alpha*norm(YD{internalNodes(j)}-Y{internalNodes(j)},'fro')^2+zeta*trace(YD{internalNodes(j)}'*cur_L{internalNodes(j)}*YD{internalNodes(j)})+ beta*norm(gap{internalNodes(j)}*W{internalNodes(j)})^2;
+            obj(i)=obj(i)+norm(X{internalNodes(j)}*W{internalNodes(j)}-YD{internalNodes(j)},'fro')^2+lambda*L21(W{internalNodes(j)})+alpha*norm(YD{internalNodes(j)}-Y{internalNodes(j)},'fro')^2+beta*trace(YD{internalNodes(j)}'*cur_L{internalNodes(j)}*YD{internalNodes(j)})+ theta*norm(gap{internalNodes(j)}*W{internalNodes(j)})^2;
         end
     end
 end
