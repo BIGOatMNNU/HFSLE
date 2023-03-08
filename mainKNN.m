@@ -1,7 +1,7 @@
 clc; clear;
 str1={'DD';'F194'};
 alpha=[10 10];%α
-zeta=[100 10];%θ
+theta=[100 10];%θ
 beta=[10 0.01];%β
 m = length(str1); 
 rng('default');
@@ -10,7 +10,7 @@ for i = 1:m
     load (filename);
     [X,Y,Z]=create_SubTable2(data_array, tree);
     tic;
-    [feature{i},W{i},YD{i}] = HFSLE(X, Y,Z, tree, 10, alpha, zeta ,beta,0);
+    [feature{i},W{i},YD{i}] = HFSLE(X, Y,Z, tree, 10, alpha, theta ,beta,0);
     TrainTime{i} =toc;
     %Test feature batch
     testFile = [str1{i}, 'Test.mat']
