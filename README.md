@@ -8,4 +8,4 @@
 * matlab2016a
 
 ## How to use
-*run mainKNN.m
+* run mainKNN.m
